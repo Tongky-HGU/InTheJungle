@@ -345,10 +345,3 @@
 //};
 //
 //#endif
-//
-////template BTreeMap<Person>;
-//
-//int main(void) {
-//	map.Insert(Person(5, "Jake"));
-//
-//}

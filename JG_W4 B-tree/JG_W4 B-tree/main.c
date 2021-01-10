@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define Node_Order		4
+#define Node_Order		3
 #define Node_Childs		Node_Order
 #define Node_Keys		Node_Childs-1
 
@@ -19,12 +19,12 @@ struct BTreeNode {							// 비트리의 노드 구조체
 
 struct BTreeNode* root; // 루트 포인터
 /*SEARCH******************************************************************************************************/
-int searchNode(int val) {									// TO DO:: 이진탐색
-	if (!root) { 											// empty tree!
+int searchNode(struct BTreeNode* node, int val) {			// TO DO:: 이진탐색
+	if (!node) { 											// empty tree!
 		printf("Empty tree!!\n");
 		return 0;
 	}
-	struct BTreeNode* level = root;							// root부터 leaf까지 탐색
+	struct BTreeNode* level = node;							// root부터 leaf까지 탐색
 	while (1) {
 		int pos;
 		for (pos = 0; pos < level->num_key; pos++) {		
@@ -48,6 +48,7 @@ int searchNode(int val) {									// TO DO:: 이진탐색
 struct BTreeNode* createNode(int val) {
 	struct BTreeNode* newNode;
 	newNode = (struct BTreeNode*)malloc(sizeof(struct BTreeNode)); // B트리 구조체만큼 동적할당
+	
 	newNode->leaf = false;
 	newNode->key[0] = val;
 	newNode->num_key = 1;
@@ -96,7 +97,7 @@ struct BTreeNode* splitNode(int pos, struct BTreeNode* node, struct BTreeNode* p
 		return parent;
 	}
 	else {													 // 나눌 노드가 루트가 아니라면
-		for (int i = node->num_key; i > pos; i--) {
+		for (int i = parent->num_key; i > pos; i--) {
 			parent->key[i] = parent->key[i - 1];
 			parent->child[i + 1] = parent->child[i];		 // TODO:: 잘들어가는지 확인
 		}
@@ -151,6 +152,55 @@ void insert(int val) {
 
 	root = insertNode(0, val, root, root);					// root 가 있다면 노드를 찾아 삽입한다.
 }
+/*DELETE*****************************************************************************************************/
+//void delete(x,k)
+//void delete_internal_node(x,k,i)
+//void delete_predecessor(x)
+//void delete_successor(x)
+//void delete_merge(x)
+//void delete_sibling(c,i,j)
+//**********************************
+//void deletion(int k);
+//void removeFromLeaf(int idx);
+//void removeFromNonLeaf(int idx);
+//int getPredecessor(int idx);
+//int getSuccessor(int idx);
+//void fill(int idx);
+//void borrowFromPrev(int idx);
+//void borrowFromNext(int idx);
+//void merge(int idx);
+//**********************************
+//void removeVal(struct BTreeNode* myNode, int pos)
+//void rightShift(struct BTreeNode* myNode, int pos)
+//void leftShift(struct BTreeNode* myNode, int pos)
+//void mergeNodes(struct BTreeNode* myNode, int pos)
+//void adjustNode(struct BTreeNode* myNode, int pos)
+//int delValFromNode(int item, struct BTreeNode* myNode)
+//void delete (int item, struct BTreeNode* myNode)
+
+int delete(val) {
+	if (!root) { 											// empty tree!
+		printf("Empty tree!!\n");
+		return 0;
+	}
+	struct BTreeNode* level = root;							// root부터 leaf까지 탐색
+	while (1) {
+		int pos;
+		for (pos = 0; pos < level->num_key; pos++) {
+			if (val == level->key[pos]) {					// 찾으면 리턴 1
+				printf("%d exist!!\n", val);
+				return 1;
+			}
+			else if (val < level->key[pos]) {
+				break;
+			}
+		}
+		if (level->leaf) break;
+		level = level->child[pos];
+	}
+	printf("%d not exist!!\n", val);							// leaf 까지와서도 못찾으면 리턴 0
+	return 0;
+}
 
 /*PRINT******************************************************************************************************/
 void printTree(struct BTreeNode* node, int level) {			 // B트리 그리기
@@ -177,14 +227,14 @@ int main(void) {
 	insert(9);
 	insert(11);
 	insert(15);
-	insert(20);
-	insert(17);
-	insert(18);
-	insert(23);
+	//insert(20);
+	//insert(17);
+	//insert(18);
+	//insert(23);
 	printTree(root, 1);
-	searchNode(8);
-	searchNode(1);
-	searchNode(30);
+	//searchNode(root,8);
+	//searchNode(root,1);
+	//searchNode(root,30);
 
 
 	return 0;
