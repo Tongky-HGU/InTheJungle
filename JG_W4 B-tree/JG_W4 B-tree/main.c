@@ -18,8 +18,33 @@ struct BTreeNode {							// 비트리의 노드 구조체
 };
 
 struct BTreeNode* root; // 루트 포인터
+/*SEARCH******************************************************************************************************/
+int searchNode(int val) {									// TO DO:: 이진탐색
+	if (!root) { 											// empty tree!
+		printf("Empty tree!!\n");
+		return 0;
+	}
+	struct BTreeNode* level = root;							// root부터 leaf까지 탐색
+	while (1) {
+		int pos;
+		for (pos = 0; pos < level->num_key; pos++) {		
+			if (val == level->key[pos]) {					// 찾으면 리턴 1
+				printf("%d exist!!\n", val);
+				return 1;
+			}
+			else if (val < level->key[pos]) {
+				break;
+			}
+		}
+		if (level->leaf) break;
+		level = level->child[pos];
+	}
+	printf("%d not exist!!\n", val);							// leaf 까지와서도 못찾으면 리턴 0
+	return 0;
+}
 
-// create Node
+/*INSERT******************************************************************************************************/
+// Create Node
 struct BTreeNode* createNode(int val) {
 	struct BTreeNode* newNode;
 	newNode = (struct BTreeNode*)malloc(sizeof(struct BTreeNode)); // B트리 구조체만큼 동적할당
@@ -30,13 +55,13 @@ struct BTreeNode* createNode(int val) {
 	return newNode;
 }
 
-// SPLIT Node
+// Split Node
 struct BTreeNode* splitNode(int pos, struct BTreeNode* node, struct BTreeNode* parent) {
 	int median;
 	if (Node_Order % 2 == 0) {								// 짝수 모드
 		median = node->num_key / 2 - 0.5;							 
 	}
-	else {													// 짝수 모드
+	else {													// 홀수 모드
 		median = node->num_key / 2;
 	}
 	struct BTreeNode* child;
@@ -79,13 +104,12 @@ struct BTreeNode* splitNode(int pos, struct BTreeNode* node, struct BTreeNode* p
 		parent->num_key++;
 		node->num_key--;									 // median 보냈으므로 -1
 		parent->child[pos+1] = child;						 // 원래 노드에 child left를 추가해준다.
-		//parent->child[parent->num_child + 1] = child;			 // 원래 노드에 child right를 추가해준다.
 		parent->num_child += 1;
 	}
 	return node;
 }
 
-
+//Insert Node
 struct BTreeNode* insertNode(int parent_pos, int val, struct BTreeNode* node, struct BTreeNode* parent) {
 	int pos;												// pos는 삽입 될 포지션
 	for (pos = 0; pos < node->num_key; pos++) {
@@ -124,12 +148,16 @@ void insert(int val) {
 		root->leaf = true;
 		return;
 	}
-	//struct BTreeNode* temp;								// 부모 포인터 (temp)
-	//temp = root;
+
 	root = insertNode(0, val, root, root);					// root 가 있다면 노드를 찾아 삽입한다.
 }
 
-void printTree(struct BTreeNode* node, int level) {			 // 트리 그리기
+/*PRINT******************************************************************************************************/
+void printTree(struct BTreeNode* node, int level) {			 // B트리 그리기
+	if (!root) { 											// empty tree!
+		printf("Empty tree!!\n");
+		return;
+	}
 	printf("Level %d :", level);
 	for (int i = 0; i < node->num_key; i++) {
 		printf("%d ", node->key[i]);
@@ -141,21 +169,23 @@ void printTree(struct BTreeNode* node, int level) {			 // 트리 그리기
 	}
 }
 
-
+/*MAIN******************************************************************************************************/
 int main(void) {
 
-	//insert(10);
-	//insert(8);
-	//insert(9);
-	//insert(11);
-	//insert(15);
-	//insert(20);
-	//insert(17);
-	//insert(18);
-	//insert(23);
-
-
+	insert(10);
+	insert(8);
+	insert(9);
+	insert(11);
+	insert(15);
+	insert(20);
+	insert(17);
+	insert(18);
+	insert(23);
 	printTree(root, 1);
+	searchNode(8);
+	searchNode(1);
+	searchNode(30);
+
 
 	return 0;
 }
