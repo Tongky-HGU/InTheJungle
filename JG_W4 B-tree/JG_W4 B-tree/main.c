@@ -359,7 +359,13 @@ int deleteValFromNode(int val, struct BTreeNode* node) {
 		return flag;
 	}
 	else {
-		flag = deleteValFromNode(val, node->child[pos]);
+		if (node->leaf) {
+			return flag;
+		}
+		else {
+			flag = deleteValFromNode(val, node->child[pos]);
+
+		}
 	}
 	if (node->child[pos]) {									// 재귀로 나왔을 때 삭제했던 자식이 갯수가 모자를 때 
 		if (node->child[pos]->num_key < Num_Minimum_Keys) {
@@ -375,7 +381,16 @@ void delete(struct BTreeNode* node, int val) {
 		printf("Empty tree!!\n");
 		return;
 	}
-	deleteValFromNode(val, node);
+	int flag = deleteValFromNode(val, node);				
+	if (!flag) { 											// 삭제 할 노드가 없을 때
+		printf("%d no exist in the tree!!\n", val);
+		return;
+	}
+	if (node->num_key == 0) {								// case#3 높이의 변화가 있을때
+		node = node->child[0];
+	}
+	root = node;
+
 }
 
 /*PRINT******************************************************************************************************/
@@ -404,12 +419,10 @@ int main(void) {
 	insert(5);
 	insert(10);
 	insert(15);
-	insert(1);
-
-	//insert(20);
-	//insert(25);
-	//insert(30);
-	//insert(35);
+	insert(20);
+	insert(25);
+	insert(30);
+	insert(35);
 	//insert(40);
 	//insert(45);
 	//insert(50);
@@ -427,7 +440,7 @@ int main(void) {
 
 	printTree(root, 1);
 	printf("****************************************************\n");
-	delete(root, 15);
+	delete(root, 20);
 
 	printTree(root, 1);
 
