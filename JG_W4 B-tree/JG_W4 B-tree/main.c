@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define Node_Order			3
+#define Node_Order			5
 #define Node_Childs			Node_Order
 #define Node_Keys			Node_Childs-1
 #define Num_Minimum_Keys	Node_Order/2
@@ -155,16 +155,40 @@ void insert(int val) {
 }
 /*DELETE*****************************************************************************************************/
 
+int findPredecessor(struct BTreeNode* node) {
+	int predecessor;
+	if (node->leaf) {
+		return node->key[node->num_key - 1];
+	}
+	//if (node->num_key < Num_Minimum_Keys) {
+	//	return node->key[node->num_key - 1];
+	//}
+	return findPredecessor(node->child[node->num_child - 1]);
+}
+
+int findSuccessor(struct BTreeNode* node) {
+	int successor;
+	if (node->leaf) {
+		return node->key[0];
+	}
+	//if (node->num_key > Num_Minimum_Keys) {
+	//	return node->key[0];
+	//}
+	return findSuccessor(node->child[0]);
+}
+
 int inorderPredecessor(struct BTreeNode* node, int pos) {
-	int predecessor = node->child[pos]->num_key - 1;
-	node->key[pos] = node->child[pos]->key[predecessor];
-	return node->child[pos]->key[predecessor];
+	//int predecessor = node->child[pos]->num_key - 1;
+	int predecessor = findPredecessor(node->child[pos]);
+	node->key[pos] = predecessor;
+	return predecessor;
 }
 
 int inorderSuccessor(struct BTreeNode* node, int pos) {
-	int successor = 0;
-	node->key[pos] = node->child[pos+1]->key[successor];
-	return node->child[pos + 1]->key[successor];
+	//int successor = 0;
+	int successor = findSuccessor(node->child[pos+1]);
+	node->key[pos] = successor;
+	return successor;
 }
 
 int inorderMerge(struct BTreeNode* node, int pos) {
@@ -219,7 +243,10 @@ void deleteInnerTree(struct BTreeNode* node, int pos) { // TO DO:: 자식이 없을경
 }
 
 void borrowFromLeft(struct BTreeNode* node, int pos) {
-	int target = node->child[pos]->num_key;							 // 부족한 위치에 들어가야할 idx
+	int target = 0;													 // 부족한 위치에 들어가야할 idx
+	for (int i = 0; i < node->child[pos]->num_key; i++) {
+		node->child[pos]->key[i + 1] = node->child[pos]->key[i];
+	}
 	node->child[pos]->key[target] = node->key[pos-1];				 // 내 꺼를 내준다.
 	node->child[pos]->num_key++;						
 
@@ -229,10 +256,10 @@ void borrowFromLeft(struct BTreeNode* node, int pos) {
 	node->child[pos - 1]->num_key--;								 // 가져온 곳의 키갯수를 지운다.
 
 							       
-	if (target = node->child[pos - 1]->num_child == Node_Childs) {		   // 빌려온 곳의 child가 있다면
-		borrow = node->child[pos - 1]->num_child - 1;			     // 빌려온 곳의 child를 넘겨준다.
-		for (int i = 0; i < node->child[pos]->num_child; i++) {
-			node->child[pos]->child[i + 1] = node->child[pos]->child[i];
+	if (node->child[pos - 1]->num_child > 0 ) {						 // 빌려온 곳의 child가 있다면
+		borrow = node->child[pos - 1]->num_child-1;			     // 빌려온 곳의 child를 넘겨준다.
+		for (int i = node->child[pos]->num_child; i >0; i--) {
+			node->child[pos]->child[i] = node->child[pos]->child[i-1];
 		}
 		node->child[pos]->child[0] = node->child[pos - 1]->child[borrow];
 		node->child[pos]->num_child++;
@@ -254,7 +281,7 @@ void borrowFromRight(struct BTreeNode* node, int pos) {
 	}
 	node->child[pos + 1]->num_key--;								 
 	
-	if (target = node->child[pos + 1]->num_child > 0) {
+	if (node->child[pos + 1]->num_child > 0) {
 		target = node->child[pos]->num_child;							 // 빌려온 곳의 child를 넘겨준다.
 		node->child[pos]->child[target] = node->child[pos + 1]->child[borrow];
 		node->child[pos]->num_child++;
@@ -269,7 +296,7 @@ void borrowFromRight(struct BTreeNode* node, int pos) {
 void mergeNode(struct BTreeNode* node, int pos, int pos_left) {		// 노드 키의 poe_left 값을 내려준다. TODO:: 왜 오른쪽 기준에도 문제없이 돌아가는가?
 	int target = node->child[pos_left]->num_key;					// 왼쪽 자식에 들어갈 idx
 		
-	node->child[pos_left]->key[target] = node->key[pos_left];	// 내 노드값을 넣어준다.
+	node->child[pos_left]->key[target] = node->key[pos_left];		// 내 노드값을 넣어준다.
 	node->child[pos_left]->num_key++;
 
 	for (int i = 0; i < node->child[pos]->num_key; i++) {			// 오른쪽자식의 키를 왼쪽 자식에 넣어준다.
@@ -367,10 +394,8 @@ int deleteValFromNode(int val, struct BTreeNode* node) {
 
 		}
 	}
-	if (node->child[pos]) {									// 재귀로 나왔을 때 삭제했던 자식이 갯수가 모자를 때 
-		if (node->child[pos]->num_key < Num_Minimum_Keys) {
-			adjustNode(node, pos);
-		}
+	if (node->child[pos]->num_key < Num_Minimum_Keys) {    // 재귀로 나왔을 때 삭제했던 자식이 갯수가 모자를 때 
+		adjustNode(node, pos);
 	}
 
 	return flag;
@@ -416,35 +441,65 @@ void printTree(struct BTreeNode* node, int level) {			 // B트리 그리기
 /*MAIN******************************************************************************************************/
 int main(void) {
 
-	insert(5);
 	insert(10);
-	insert(15);
 	insert(20);
-	insert(25);
 	insert(30);
-	insert(35);
-	//insert(40);
-	//insert(45);
-	//insert(50);
-	//insert(55);
+	insert(40);
+	insert(50);
+	insert(60);
+	insert(70);
+	insert(80);
+	insert(90);
+	insert(100);
+	insert(110);
+	insert(120);
+	insert(130);
+	insert(140);
+	insert(150);
+	insert(160);
+	insert(170);
+	insert(180);
+	insert(190);
+	insert(200);
+	insert(210);
+	insert(220);
+	insert(230);
+	insert(240);
+	insert(250);
+	insert(260);
+	
+	insert(9);
+	insert(39);
+	insert(101);
+	insert(102);
+	insert(103);
+	insert(104);
+	insert(161);
+	insert(191);
+	insert(251);
 
-	//insert(31);
-	//insert(32);
-	//insert(36);
-	//insert(26);
 
-
-	//insert(60);
-	//insert(70);
-
-
+	delete(root, 103);
+	delete(root, 70);
+	delete(root, 130);
+	delete(root, 104);
+	delete(root, 60);
+	delete(root, 120);
+	delete(root, 240);
+	delete(root, 160);
+	delete(root, 180);
+	delete(root, 250);
+	delete(root, 20);
+	delete(root, 80);
+	delete(root, 102);
+	delete(root, 50);
 	printTree(root, 1);
 	printf("****************************************************\n");
-	delete(root, 20);
+	delete(root, 90);
+
 
 	printTree(root, 1);
 
-	//searchNode(root,30);
 
 
 	return 0;
