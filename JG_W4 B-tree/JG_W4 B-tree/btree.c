@@ -8,7 +8,7 @@
 //#define Node_Order			5
 //#define Node_Childs			Node_Order
 //#define Node_Keys			Node_Childs-1
-//#define Num_Minimum_Keys	Node_Order/2
+//#define Num_Minimum_Keys	(int)(ceil(Node_Order/2.0))-1
 //
 //
 //struct BTreeNode {							// 비트리의 노드 구조체

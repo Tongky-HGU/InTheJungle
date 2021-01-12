@@ -4,11 +4,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 
-#define Node_Order			5
+
+#define Node_Order			3
 #define MAX_Childs			Node_Order
 #define MAX_Keys			MAX_Childs-1
-#define MIN_Keys			Node_Order/2 -1
+#define MIN_Keys			(int)(ceil(Node_Order/2.0))-1
 
 struct Node {							    // 비트리의 노드 구조체
 	bool leaf;
@@ -21,6 +23,31 @@ struct Node {							    // 비트리의 노드 구조체
 };
 
 struct Node* root; // 루트 포인터
+
+/*SEARCH******************************************************************************************************/
+int searchNode(struct Node* node, int val) {			// TO DO:: 이진탐색
+	if (!node) { 											// empty tree!
+		printf("Empty tree!!\n");
+		return 0;
+	}
+	struct Node* level = node;							// root부터 leaf까지 탐색
+	while (1) {
+		int pos;
+		for (pos = 0; pos < level->num_key; pos++) {
+			if (val == level->key[pos]) {					// 찾으면 리턴 1
+				printf("%d exist!!\n", val);
+				return 1;
+			}
+			else if (val < level->key[pos]) {
+				break;
+			}
+		}
+		if (level->leaf) break;
+		level = level->child[pos];
+	}
+	printf("%d not exist!!\n", val);							// leaf 까지와서도 못찾으면 리턴 0
+	return 0;
+}
 
 
 /*INSERT******************************************************************************************************/
@@ -52,11 +79,12 @@ struct Node* splitNode(int pos, struct Node* node, struct Node* parent) {
 		node->next = child;								     // 새 노드와 기존 노드를 링크 시켜준다.
 		node->end_leaf = false;								 // 리프노드가 분할된다면 기존 노드는 더이상 마지막 리프일 수 없다.
 
-		for (int i = median; i < node->num_key; i++) {  // child right에 키 담아주기 기존 노드는 child left가 된다
+		int num_iter = node->num_key;
+		for (int i = median; i < num_iter; i++) {			 // child right에 키 담아주기 기존 노드는 child left가 된다
 			child->key[i - median] = node->key[i];
+			node->num_key--;
+			child->num_key++;
 		}
-		node->num_key = node->num_key - median;
-		child->num_key = median;
 	}
 	else{													 // leaf가 아닌 경우는 child를 넘겨줘야함
 		int num_iter = node->num_key;
@@ -333,27 +361,6 @@ int findSuccessor(struct Node* node) {
 void deleteInnerTree(struct Node* node, int pos) { 
 	int sucessor = findSuccessor(node->child[pos + 1]);
 	node->key[pos] = sucessor;
-	//if (node->child[pos]->num_key >= node->child[pos + 1]->num_key) { // 왼쪽 자식의 키 갯수가 크거나 같을때
-	//	if (node->child[pos]->num_key > MIN_Keys) {
-	//		result_deletion = inorderPredecessor(node, pos);
-	//		deleteValFromNode(result_deletion, node->child[pos]);
-
-	//	}
-	//	else {
-	//		result_deletion = inorderMerge(node, pos);
-	//		deleteValFromNode(result_deletion, node->child[pos]);
-	//	}
-	//}
-	//else {															  // 오른쪽 자식의 키 갯수가 클 때
-	//	if (node->child[pos + 1]->num_key > MIN_Keys) {
-	//		result_deletion = inorderSuccessor(node, pos);
-	//		deleteValFromNode(result_deletion, node->child[pos + 1]);
-	//	}
-	//	else {
-	//		result_deletion = inorderMerge(node, pos);
-	//		deleteValFromNode(result_deletion, node->child[pos]);
-	//	}
-	//}
 }
 
 
@@ -380,6 +387,7 @@ int deleteValFromNode(int val, struct Node* node) {
 			flag = deleteValFromNode(val, node->child[pos+1]); // 내부에서 발견했을 때는 다음 child로 넘어간다.
 			if (node->child[pos + 1]->num_key < MIN_Keys) {    // 재귀로 나왔을 때 삭제했던 자식이 갯수가 모자를 때 
 				adjustNode(node, pos+1);
+				deleteValFromNode(val, node);
 			}
 			else {
 				deleteInnerTree(node, pos);
@@ -488,20 +496,23 @@ int main(void) {
 	//delete(root, 42);
 	//delete(root, 4);
 
-	for (int i=0; i < 500; i++) {
+	for (int i = 10; i < 100; i += 10) {
 		insert(i);
 	}
+
+
+
+
 
 	printTree(root, 1);
 	printLeaves(root);
 	printf("----------------------------------------------------------------------------------------------------\n");
-
-	for (int i=300; i < 500; i++) {
-		delete(root,i);
-	}
+	delete(root, 50);
 
 	printTree(root, 1);
 	printLeaves(root);
 
+	searchNode(root, 20);
+	searchNode(root, 120);
 
 }
