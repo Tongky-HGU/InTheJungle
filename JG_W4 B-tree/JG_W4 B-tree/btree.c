@@ -1,5 +1,5 @@
-// Btree study
-// 2021
+//// Btree study
+//// 2021
 //
 //#include <stdio.h>
 //#include <stdlib.h>
@@ -46,7 +46,7 @@
 //}
 //
 ///*INSERT******************************************************************************************************/
-// Create Node
+// //Create Node
 //struct BTreeNode* createNode(int val) {
 //	struct BTreeNode* newNode;
 //	newNode = (struct BTreeNode*)malloc(sizeof(struct BTreeNode)); // B트리 구조체만큼 동적할당
@@ -58,7 +58,7 @@
 //	return newNode;
 //}
 //
-//Split Node
+////Split Node
 //struct BTreeNode* splitNode(int pos, struct BTreeNode* node, struct BTreeNode* parent) {
 //	int median;
 //	if (Node_Order % 2 == 0) {								// 짝수 모드
@@ -75,17 +75,20 @@
 //	child->num_child = 0;
 //
 //	if (!node->leaf) {										 // leaf가 아닌 경우는 child를 넘겨줘야함
-//		for (int i = median + 1; i <= node->num_key; i++) {
+//		int num_iter = node->num_child;
+//		for (int i = median + 1; i < num_iter; i++) {
 //			child->child[i - median - 1] = node->child[i];
 //			child->num_child++;
 //			node->num_child--;
 //		}
 //	}
-//	for (int i = median + 1; i <= node->num_key; i++) {		 // child right에 키 담아주기 기존 노드는 child left가 된다
+//	int num_iter = node->num_key;
+//	for (int i = median + 1; i < num_iter; i++) {		 // child right에 키 담아주기 기존 노드는 child left가 된다
 //		child->key[i - median - 1] = node->key[i];
 //		child->num_key++;
 //		node->num_key--;
 //	}
+//
 //
 //	if (node == root) {										 // 나눌 노드가 루트라면
 //		struct BTreeNode* new_parent;						 // 새로운 parent에는 median 키를 넣어준다.
@@ -105,13 +108,13 @@
 //		parent->key[pos] = node->key[median];				 // 부모 노드에 key를 추가해준다.
 //		parent->num_key++;
 //		node->num_key--;									 // median 보냈으므로 -1
-//		parent->child[pos + 1] = child;						 // 원래 노드에 child left를 추가해준다.
+//		parent->child[pos + 1] = child;						 // 부모 노드에 새 child를 추가해준다.
 //		parent->num_child += 1;
 //	}
 //	return node;
 //}
 //
-//Insert Node
+////Insert Node
 //struct BTreeNode* insertNode(int parent_pos, int val, struct BTreeNode* node, struct BTreeNode* parent) {
 //	int pos;												// pos는 삽입 될 포지션
 //	for (pos = 0; pos < node->num_key; pos++) {
@@ -160,9 +163,9 @@
 //	if (node->leaf) {
 //		return node->key[node->num_key - 1];
 //	}
-//	if (node->num_key < Num_Minimum_Keys) {
-//		return node->key[node->num_key - 1];
-//	}
+//	//if (node->num_key < Num_Minimum_Keys) {
+//	//	return node->key[node->num_key - 1];
+//	//}
 //	return findPredecessor(node->child[node->num_child - 1]);
 //}
 //
@@ -171,21 +174,21 @@
 //	if (node->leaf) {
 //		return node->key[0];
 //	}
-//	if (node->num_key > Num_Minimum_Keys) {
-//		return node->key[0];
-//	}
+//	//if (node->num_key > Num_Minimum_Keys) {
+//	//	return node->key[0];
+//	//}
 //	return findSuccessor(node->child[0]);
 //}
 //
 //int inorderPredecessor(struct BTreeNode* node, int pos) {
-//	int predecessor = node->child[pos]->num_key - 1;
+//	//int predecessor = node->child[pos]->num_key - 1;
 //	int predecessor = findPredecessor(node->child[pos]);
 //	node->key[pos] = predecessor;
 //	return predecessor;
 //}
 //
 //int inorderSuccessor(struct BTreeNode* node, int pos) {
-//	int successor = 0;
+//	//int successor = 0;
 //	int successor = findSuccessor(node->child[pos + 1]);
 //	node->key[pos] = successor;
 //	return successor;
@@ -358,7 +361,6 @@
 //		}
 //
 //	}
-//
 //}
 //
 //int deleteValFromNode(int val, struct BTreeNode* node) {
@@ -438,82 +440,63 @@
 //	}
 //}
 //
-///*MAIN******************************************************************************************************/
+/////*MAIN******************************************************************************************************/
 //int main(void) {
 //
-//	//insert(10);
-//	//insert(20);
-//	//insert(30);
-//	//insert(40);
-//	//insert(50);
-//	//insert(60);
-//	//insert(70);
-//	//insert(80);
-//	//insert(90);
-//	//insert(100);
-//	//insert(110);
-//	//insert(120);
-//	//insert(130);
-//	//insert(140);
-//	//insert(150);
-//	//insert(160);
-//	//insert(170);
-//	//insert(180);
-//	//insert(190);
-//	//insert(200);
-//	//insert(210);
-//	//insert(220);
-//	//insert(230);
-//	//insert(240);
-//	//insert(250);
-//	//insert(260);
-//	//
-//	//insert(9);
-//	//insert(39);
-//	//insert(101);
-//	//insert(102);
-//	//insert(103);
-//	//insert(104);
-//	//insert(161);
-//	//insert(191);
-//	//insert(251);
+//	insert(10);
+//	insert(20);
+//	insert(30);
+//	insert(40);
+//	insert(50);
+//	insert(60);
+//	insert(70);
+//	insert(80);
+//	insert(90);
+//	insert(100);
+//	insert(110);
+//	insert(120);
+//	insert(130);
+//	insert(140);
+//	insert(150);
+//	insert(160);
+//	insert(170);
+//	insert(180);
+//	insert(190);
+//	insert(200);
+//	insert(210);
+//	insert(220);
+//	insert(230);
+//	insert(240);
+//	insert(250);
+//	insert(260);
 //
+//	insert(9);
+//	insert(39);
+//	insert(101);
+//	insert(102);
+//	insert(103);
+//	insert(104);
+//	insert(161);
+//	insert(191);
+//	insert(251);
 //
-//	//delete(root, 103);
-//	//delete(root, 70);
-//	//delete(root, 130);
-//	//delete(root, 104);
-//	//delete(root, 60);
-//	//delete(root, 120);
-//	//delete(root, 240);
-//	//delete(root, 160);
-//	//delete(root, 180);
-//	//delete(root, 250);
-//	//delete(root, 20);
-//	//delete(root, 80);
-//	//delete(root, 102);
-//	//delete(root, 50);
-//	//delete(root, 90);
-//
-//
-//	//for (int i = 1; i <= 300; i++) {
-//	//	insert(i);
-//	//}
-//	//printTree(root, 1);
-//	//printf("****************************************************\n");
-//	//for (int i = 150; i <= 294; i++) {
-//	//	delete(root,i);
-//	//}
-//	//printTree(root, 1);
-//	//searchNode(root, 295);
-//	//searchNode(root, 149);
-//	//searchNode(root, 300);
-//	//searchNode(root, 150);
-//	//searchNode(root, 175);
-//
-//
-//	printf("****************************************************\n");
 //	printTree(root, 1);
+//	printf("****************************************************\n");
+//	delete(root, 103);
+//	delete(root, 70);
+//	delete(root, 130);
+//	delete(root, 104);
+//	delete(root, 60);
+//	delete(root, 120);
+//	delete(root, 240);
+//	delete(root, 160);
+//
+//
+//
+//
+//	printTree(root, 1);
+//
+//	//searchNode(root,30);
 //
 //
 //	return 0;

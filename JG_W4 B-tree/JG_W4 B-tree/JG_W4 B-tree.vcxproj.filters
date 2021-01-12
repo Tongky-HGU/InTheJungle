@@ -24,7 +24,7 @@
     <ClCompile Include="btree_cpp.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="backup.c">
+    <ClCompile Include="btree.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

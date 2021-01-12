@@ -123,7 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="backup.c" />
+    <ClCompile Include="btree.c" />
     <ClCompile Include="btree_cpp.cpp" />
     <ClCompile Include="main.c" />
     <ClCompile Include="test.c" />
