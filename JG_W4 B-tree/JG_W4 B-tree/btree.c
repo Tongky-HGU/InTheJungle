@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
+
 
 #define Node_Order			5
 #define Node_Childs			Node_Order
@@ -163,9 +165,6 @@ int findPredecessor(struct BTreeNode* node) {
 	if (node->leaf) {
 		return node->key[node->num_key - 1];
 	}
-	//if (node->num_key < Num_Minimum_Keys) {
-	//	return node->key[node->num_key - 1];
-	//}
 	return findPredecessor(node->child[node->num_child - 1]);
 }
 
@@ -174,21 +173,16 @@ int findSuccessor(struct BTreeNode* node) {
 	if (node->leaf) {
 		return node->key[0];
 	}
-	//if (node->num_key > Num_Minimum_Keys) {
-	//	return node->key[0];
-	//}
 	return findSuccessor(node->child[0]);
 }
 
 int inorderPredecessor(struct BTreeNode* node, int pos) {
-	//int predecessor = node->child[pos]->num_key - 1;
 	int predecessor = findPredecessor(node->child[pos]);
 	node->key[pos] = predecessor;
 	return predecessor;
 }
 
 int inorderSuccessor(struct BTreeNode* node, int pos) {
-	//int successor = 0;
 	int successor = findSuccessor(node->child[pos + 1]);
 	node->key[pos] = successor;
 	return successor;
@@ -441,63 +435,65 @@ void printTree(struct BTreeNode* node, int level) {			 // B트리 그리기
 }
 
 ///*MAIN******************************************************************************************************/
-//int main(void) {
-//
-//	insert(10);
-//	insert(20);
-//	insert(30);
-//	insert(40);
-//	insert(50);
-//	insert(60);
-//	insert(70);
-//	insert(80);
-//	insert(90);
-//	insert(100);
-//	insert(110);
-//	insert(120);
-//	insert(130);
-//	insert(140);
-//	insert(150);
-//	insert(160);
-//	insert(170);
-//	insert(180);
-//	insert(190);
-//	insert(200);
-//	insert(210);
-//	insert(220);
-//	insert(230);
-//	insert(240);
-//	insert(250);
-//	insert(260);
-//
-//	insert(9);
-//	insert(39);
-//	insert(101);
-//	insert(102);
-//	insert(103);
-//	insert(104);
-//	insert(161);
-//	insert(191);
-//	insert(251);
-//
-//	printTree(root, 1);
-//	printf("****************************************************\n");
-//	delete(root, 103);
-//	delete(root, 70);
-//	delete(root, 130);
-//	delete(root, 104);
-//	delete(root, 60);
-//	delete(root, 120);
-//	delete(root, 240);
-//	delete(root, 160);
-//
-//
-//
-//
-//	printTree(root, 1);
-//
-//	//searchNode(root,30);
-//
-//
-//	return 0;
-//}
+int main(void) {
+	printf("%d\n", Num_Minimum_Keys);
+	insert(10);
+	insert(20);
+	insert(30);
+	insert(40);
+	insert(50);
+	insert(60);
+	insert(70);
+	insert(80);
+	insert(90);
+	insert(100);
+	insert(110);
+	insert(120);
+	insert(130);
+	insert(140);
+	insert(150);
+	insert(160);
+	insert(170);
+	insert(180);
+	insert(190);
+	insert(200);
+	insert(210);
+	insert(220);
+	insert(230);
+	insert(240);
+	insert(250);
+	insert(260);
+
+	insert(9);
+	insert(39);
+	insert(101);
+	insert(102);
+	insert(103);
+	insert(104);
+	insert(161);
+	insert(191);
+	insert(251);
+
+
+	delete(root, 103);
+	printTree(root, 1);
+	printf("****************************************************\n");
+	delete(root, 70);
+
+	//delete(root, 130);
+	//delete(root, 104);
+	//delete(root, 60);
+	//delete(root, 120);
+	//delete(root, 240);
+	//delete(root, 160);
+
+
+
+
+	printTree(root, 1);
+
+	//searchNode(root,30);
+
+
+	return 0;
+}
