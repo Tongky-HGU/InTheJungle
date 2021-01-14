@@ -127,6 +127,7 @@
     <ClCompile Include="btree_cpp.cpp" />
     <ClCompile Include="main.c" />
     <ClCompile Include="test.c" />
+    <ClCompile Include="test_b+tree_20210114.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
