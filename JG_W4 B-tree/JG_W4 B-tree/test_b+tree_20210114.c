@@ -169,7 +169,7 @@ void merge(struct node* node, int pos, int pos_left) {
 	}
 	else {
 		int target = node->child[pos_left]->num_key;
-		node->child[pos_left]->key[target] = node->key[pos-1]; //chekc
+		node->child[pos_left]->key[target] = node->key[pos-1];
 		node->child[pos_left]->data[target] = node->data[pos-1];
 		node->child[pos_left]->num_key++;
 
@@ -200,6 +200,7 @@ void merge(struct node* node, int pos, int pos_left) {
 			node->child[i] = node->child[i + 1];
 		}
 		node->num_child--;
+
 	}
 
 }
@@ -232,9 +233,12 @@ void borrowFromLeft(struct node* node, int pos) {
 		node->child[pos]->key[target] = node->key[pos - 1];
 		node->child[pos]->data[target] = node->data[pos - 1];
 		node->child[pos]->num_key++;
-		node->child[pos - 1]->num_key--;
+
 
 		node->key[pos - 1] = node->child[pos - 1]->key[borrow];
+
+		node->child[pos - 1]->num_key--;
+
 
 		for (int i = node->child[pos]->num_child; i > target; i--) {
 			node->child[pos]->child[i] = node->child[pos]->child[i - 1];
@@ -282,8 +286,14 @@ void borrowFromRight(struct node* node, int pos) {
 
 		target = node->child[pos]->num_child;
 		node->child[pos]->child[target] = node->child[pos + 1]->child[borrow];
-		node->child[pos + 1]->num_child--;
 		node->child[pos]->num_child++;
+
+		for (int i = 0; i < node->child[pos + 1]->num_child - 1; i++) {	
+			node->child[pos + 1]->child[i] = node->child[pos + 1]->child[i + 1];
+		}
+		node->child[pos + 1]->num_child--;
+
+
 	}
 }
 
@@ -480,7 +490,6 @@ int main()
 	for (int i = 0; i < 80; i++) {
 		delete(arr[i]);
 	}
-	Traverse(root);
 
 	printf("\n\n\n\n\n\n");
 	printf("---- TEST3 ----\n");
@@ -502,6 +511,6 @@ void print_for_exam(struct node* cur) {
 			print_for_exam(cur->child[i]);
 			printf("[%5d]\n", cur->key[i]);
 		}
-		//print_for_exam(cur->child[cur->num_key + 1]);
+		print_for_exam(cur->child[cur->num_key]);
 	}
 }

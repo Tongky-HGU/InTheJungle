@@ -30,5 +30,8 @@
     <ClCompile Include="test_b+tree_20210114.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="b+tree.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
