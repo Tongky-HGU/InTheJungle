@@ -1,6 +1,6 @@
 /*
 2020 - SW Jungle
-malloc lab inplicit method
+malloc lab implicit method
 
 mail = chotjd329@gmail.com
 

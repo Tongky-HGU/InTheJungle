@@ -140,7 +140,7 @@ void* mm_malloc(size_t size)											 // 메모리할당---------------------------
 	return bp;
 }
 
-static void* find_fit(size_t asize) {									 // 들어갈 자리를 찾는 함수 next fit-----------------------------------------------------
+static void* find_fit(size_t asize) {									 // 들어갈 자리를 찾는 함수 first fit-----------------------------------------------------
 	void* bp;													
 
 	for (bp = PREV_FREE_BLKP(heap_listp); bp != (char*)NULL; bp = PREV_FREE_BLKP(bp)) {  // tail을 만날때까지 연결된 free list를 탐색 
